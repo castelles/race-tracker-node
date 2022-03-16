@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "express": "^4.17.3",
+    "mongodb": "^4.4.1",
+    "mongoose": "^6.2.6",
+    "validator": "^13.7.0"
+  },
+  "name": "race-traker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/castelles/race-tracker-node.git",
+  "author": "Caio Telles <csalestelles@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "env-cmd": "^10.1.0",
+    "eslint": "^8.11.0",
+    "nodemon": "^2.0.15"
+  }
+}
