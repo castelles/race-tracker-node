@@ -33,7 +33,7 @@ const carSchema = new mongoose.Schema({
     timestamps: true
 })
 
-carSchema.virtual('laptime', {
+carSchema.virtual('laptimes', {
     ref: 'Laptime',
     localField: '_id',
     foreignField: 'car'

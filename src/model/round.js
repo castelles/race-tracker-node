@@ -9,29 +9,29 @@ const roundSchema = new mongoose.Schema({
         default: 1,
         enum: [1, 2, 3, 4, 5]
     },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Category'
-    }
+    // category: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     required: true,
+    //     ref: 'Category'
+    // }
 })
 
-roundSchema.virtual('laptime', {
+roundSchema.virtual('laptimes', {
     ref: 'Laptime',
     localField: '_id',
     foreignField: 'round'
 })
 
-roundSchema.pre('find', async function (next) {
-    this.populate('category')
-    next()
-})
+// roundSchema.pre('find', async function (next) {
+//     this.populate('category')
+//     next()
+// })
 
 
-roundSchema.pre('findOne', async function (next) {
-    this.populate('category')
-    next()
-})
+// roundSchema.pre('findOne', async function (next) {
+//     this.populate('category')
+//     next()
+// })
 
 roundSchema.methods.toJSON = function () {
     const round = this
@@ -39,7 +39,7 @@ roundSchema.methods.toJSON = function () {
     delete publicRound.__v
 
     // publicRound.category = await Category.findById(publicRound.categoryId)
-    delete publicRound.category.__v
+    // delete publicRound.category.__v
 
     return publicRound
 }

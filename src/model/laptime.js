@@ -6,7 +6,7 @@ const laptime = new mongoose.Schema({
         trim: true,
         require: true,
     },
-    carId: {
+    car: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Car'
@@ -19,24 +19,35 @@ const laptime = new mongoose.Schema({
 })
 
 laptime.pre('find', async function (next) {
-    this.populate('round')
+    this.populate('car').populate('round')
     next()
 })
 
 laptime.pre('findOne', async function (next) {
-    this.populate('round')
+    this.populate('car').populate('round')
     next()
 })
 
-laptime.methods.TOJSON = function () {
-    const laptime = this
-
-    const public = laptime.toObject()
-    delete public.__v
-    delete public.round.__v
-
-    return public
+laptime.statics.findMax = async function () {
+    const fastestLap = await Laptime
+        .findOne() 
+        .sort('time')
+        
+    return fastestLap
 }
 
-const Laptime = mongoose.model('laptime', laptime)
+laptime.methods.toJSON = function () {
+    const laptime = this
+
+    const publicLap = laptime.toObject()
+    delete publicLap.__v
+    delete publicLap.round.__v
+    delete publicLap.car.createdAt
+    delete publicLap.car.updatedAt
+    delete publicLap.car.__v
+
+    return publicLap
+}
+
+const Laptime = mongoose.model('Laptime', laptime)
 module.exports = Laptime
