@@ -33,4 +33,12 @@ router.get('/rounds/:id', async (req, res) => {
     res.send(round)
 })
 
+router.get('/rounds/byChampionship/:id', async (req, res) => {
+    const rounds = await Round.find({ championship: req.params.id })
+    if (!rounds) {
+        return res.status(404).send()
+    }
+    res.send(rounds)
+})
+
 module.exports = router

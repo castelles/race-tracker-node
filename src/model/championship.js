@@ -8,6 +8,12 @@ const championshipSchema = new mongoose.Schema({
     }
 })
 
+championshipSchema.virtual('rounds', {
+    ref: 'Round',
+    localField: '_id',
+    foreignField: 'championship'
+})
+
 championshipSchema.methods.toJSON = function () {
     const championship = this
 
@@ -16,3 +22,6 @@ championshipSchema.methods.toJSON = function () {
 
     return public
 }
+
+const Championship = mongoose.model('Championship', championshipSchema)
+module.exports = Championship

@@ -40,7 +40,7 @@ router.get('/laptime/bestfive', async (req, res) => {
     res.send(lap)
 })
 
-router.get('/laptime/championshipTable', async (req, res) => {
+router.get('/laptime/byRounds/:id', async (req, res) => {
     
 })
 

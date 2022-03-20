@@ -36,15 +36,29 @@ laptime.statics.findMax = async function () {
     return fastestLap
 }
 
+laptime.statics.findWithNoRound = async function (roundId) {
+    const laptimes = await Laptime.find ({ round: roundId }).sort('time')
+    const laps = []
+    for (const laptime of laptimes) {
+        const {_id, time, car} = laptime
+        laps.push({
+            _id,
+            time,
+            car
+        })
+    }
+    return laps
+}
+
 laptime.methods.toJSON = function () {
     const laptime = this
 
     const publicLap = laptime.toObject()
     delete publicLap.__v
-    delete publicLap.round.__v
     delete publicLap.car.createdAt
     delete publicLap.car.updatedAt
     delete publicLap.car.__v
+    delete publicLap.round.__v
 
     return publicLap
 }
