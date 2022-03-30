@@ -4,6 +4,7 @@ const categorySchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'name parameter not found on request body.'],
+        unique: [true, 'Category name already exists.'],
         trim: true
     },
     description: {
