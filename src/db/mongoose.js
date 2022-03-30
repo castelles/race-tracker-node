@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const mongodb_url = 'mongodb://127.0.0.1:27017/race-tracker-api'
+const mongodb_url = process.env.MONGODB_URL
 mongoose.connect(mongodb_url, {
     useNewUrlParser: true
 })
