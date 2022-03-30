@@ -14,7 +14,7 @@ router.post('/cars', async (req, res, next) => {
     try {
         const category = await Category.findById(req.body.category)
         if (!category) {
-            return res.status(400).send(notFound(400, 'car'))
+            return res.status(400).send(notFound(400, 'Category'))
         }
         await car.save()
         res.status(201).send(car)    
