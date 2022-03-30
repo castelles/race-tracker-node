@@ -1,6 +1,6 @@
 require('./db/mongoose')
 const express = require("express")
-const error = require('./model/error')
+const cors = require('cors')
 const categoryRouter = require('./routers/category')
 const carRouter = require('./routers/car')
 const roundRouter = require('./routers/round')
@@ -11,6 +11,8 @@ const app = express()
 const port = process.env.PORT || 3000
 
 app.use(express.json())
+app.use(cors())
+
 //Insert Routes
 app.use(categoryRouter)
 app.use(carRouter)

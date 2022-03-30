@@ -57,7 +57,6 @@ carSchema.methods.toJSON = function () {
     delete publicCar.__v
     delete publicCar.createdAt
     delete publicCar.updatedAt
-    delete publicCar.category.__v
 
     return publicCar
 }
