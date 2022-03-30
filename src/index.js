@@ -1,6 +1,7 @@
 require('./db/mongoose')
 const express = require("express")
 const cors = require('cors')
+const {errorController} = require('./controller/ErrorController')
 const categoryRouter = require('./routers/category')
 const carRouter = require('./routers/car')
 const roundRouter = require('./routers/round')
@@ -19,6 +20,8 @@ app.use(carRouter)
 app.use(roundRouter)
 app.use(lapRouter)
 app.use(championshipRouter)
+
+app.use(errorController)
 
 app.listen(port, () => {
     console.log(`Server is up on port ${port}`)

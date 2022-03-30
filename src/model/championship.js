@@ -4,8 +4,10 @@ const championshipSchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
-        required: true
+        required: [true, 'name parameter not found on request body.']
     }
+}, {
+    versionKey: false
 })
 
 championshipSchema.virtual('rounds', {
@@ -18,7 +20,6 @@ championshipSchema.methods.toJSON = function () {
     const championship = this
 
     const public = championship.toObject()
-    delete public.__v
 
     return public
 }

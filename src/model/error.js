@@ -5,4 +5,5 @@ const error = (statusCode, error, description) => {
         description
     }
 }
+
 module.exports = error

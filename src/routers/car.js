@@ -1,26 +1,30 @@
 const express = require('express')
-const { send } = require('process')
+const { notFound } = require('../controller/ErrorController')
 const Car = require('../model/car')
+const Category = require('../model/category')
+const error = require('../model/error')
 
 const router = new express.Router()
 
-router.post('/cars', async (req, res) => {
-    const car = new Car({
+router.post('/cars', async (req, res, next) => {
+    var car = new Car({
         ...req.body
     })
-
+    
     try {
+        const category = await Category.findById(req.body.category)
+        if (!category) {
+            return res.status(400).send(notFound(400, 'car'))
+        }
         await car.save()
-        res.status(201).send(car)
+        res.status(201).send(car)    
     } catch (err) {
-        console.log(err.message)
-        if (err.message.endsWith('\"category\"'))
-            return res.status(404).send()
-        res.status(500).send()
+        console.log(err)
+        next(err)
     }
 })
 
-router.get('/cars', async (req, res) => {
+router.get('/cars', async (req, res, next) => {
     const {
         limit,
         offset,
@@ -46,15 +50,19 @@ router.get('/cars', async (req, res) => {
         'createdAt': order
     }
 
-    const cars = await Car.find(null, null, {
-        limit: parseInt(parsedLimit),
-        skip: parseInt(parsedOffset),
-        sort
-    })
-    res.status(200).send(cars)
+    try {
+        const cars = await Car.find(null, null, {
+            limit: parseInt(parsedLimit),
+            skip: parseInt(parsedOffset),
+            sort
+        })
+        res.status(200).send(cars)
+    } catch (error) {
+        next(error)   
+    }
 })
 
-router.get('/cars/:categoryId', async (req, res) => {
+router.get('/cars/:categoryId', async (req, res, next) => {
     const match = { category: req.params.categoryId }
 
     const {
@@ -91,16 +99,19 @@ router.get('/cars/:categoryId', async (req, res) => {
             sort
         }
     ) 
-
-    res.send(cars)
+    try {
+        res.send(cars)
+    } catch (err) {
+        next(err)
+    }
 })
 
-router.patch('/cars/:id', async (req, res) => {
+router.patch('/cars/:id', async (req, res, next) => {
     const car = await Car.findById(req.params.id)
 
     const updates = Object.keys(req.body)
     if (!car) {
-        return res.status(404).send()
+        return res.status(404).send(notFound(404, 'Car'))
     }
 
     try {
@@ -108,19 +119,17 @@ router.patch('/cars/:id', async (req, res) => {
         await car.save()
         res.send(car)
     } catch (err) {
-        console.log(err)
-        res.status(500).send(err.message)
+        next(err)
     }
 })
 
-router.delete('/cars/:id', async (req, res) => {
+router.delete('/cars/:id', async (req, res, next) => {
     try {
         const car = await Car.findById(req.params.id)
         await car.remove()
         res.send(car)
     } catch (err) {
-        console.log(err)
-        res.status(500).send()
+        next(err)
     }
 })
 

@@ -1,11 +1,12 @@
 const express = require('express')
+const { notFound } = require('../controller/ErrorController')
 const Championship = require('../model/championship')
 const Laptime = require('../model/laptime')
 const Round = require('../model/round')
 
-const router = express.Router()
+const router = new express.Router()
 
-router.post('/championship', async (req, res) => {
+router.post('/championship', async (req, res, next) => {
     const championship = new Championship({
         ...req.body
     })
@@ -14,23 +15,30 @@ router.post('/championship', async (req, res) => {
         await championship.save()
         res.status(201).send(championship)
     } catch (error) {
-        console.log({ error })
-        res.status(500).send(error.message)
+        next(error)
     }
 })
 
-router.get('/championship/:id', async (req, res) => {
-    const championship = await Championship.findById(req.params.id)
-    if (!championship) {
-        return res.status(404).send()
+router.get('/championship/:id', async (req, res, next) => {
+    try {
+        const championship = await Championship.findById(req.params.id)
+        if (!championship) {
+            return res.status(404).send(
+                notFound(404, 'Championship')
+            )
+        }
+        res.status(200).send(championship)   
+    } catch (err) {
+        next(err)
     }
-    res.status(200).send(championship)
 })
 
-router.patch('/championship/:id', async (req, res) => {
+router.patch('/championship/:id', async (req, res, next) => {
     const championship = await Championship.findById(req.params.id)
     if (!championship) {
-        return res.status(404).send()
+        return res.status(404).send(
+            notFound(404, 'Championship')
+        )
     }
     const updates = Object.keys(req.body)
 
@@ -39,8 +47,7 @@ router.patch('/championship/:id', async (req, res) => {
         await championship.save()
         res.send(championship)
     } catch (err) {
-        res.status(500).send()
-        console.log({ err })
+        next(err)
     }
 })
 
@@ -57,20 +64,29 @@ const searchLaps = async function(round) {
     return null
 }
 
-router.get('/championship/:id/finalTable/', async (req, res) => {
+router.get('/championship/:id/finalTable/', async (req, res, next) => {
     const table = []
-    const rounds = await Round
+
+    try {
+        const rounds = await Round
         .find( { championship: req.params.id })
         .sort("name")
 
     for (const round of rounds) {
         const item = await searchLaps(round)
-        if (item) {
-            table.push(item)
+        if (!item) {
+            return res.status(400).send(
+                notFound(400, 'Round')
+            )
         }
+        table.push(item)
     }
 
     res.send(table)
+    } catch (err) {
+        next(err)
+    }
+    
 })
 
 module.exports = router

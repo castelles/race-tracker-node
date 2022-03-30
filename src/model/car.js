@@ -3,13 +3,12 @@ const mongoose = require('mongoose')
 const carSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
+        required: [true, '"name" parameter not found on request body.'],
         trim: true
     },
     plate: {
         type: String,
-        required: true,
-        unique: true,
+        unique: [true, 'Plate value is already in use. Register another car.'],
         uppercase: true,
         trim: true
     },
@@ -26,11 +25,12 @@ const carSchema = new mongoose.Schema({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        require: true,
+        required: [true, 'Car does not have a category associated. Send category field in the request body.'],
         ref: 'Category'
     } 
 }, {
-    timestamps: true
+    timestamps: true,
+    versionKey: false
 })
 
 carSchema.virtual('laptimes', {
@@ -54,7 +54,6 @@ carSchema.methods.toJSON = function () {
     const car = this
 
     const publicCar = car.toObject()
-    delete publicCar.__v
     delete publicCar.createdAt
     delete publicCar.updatedAt
 

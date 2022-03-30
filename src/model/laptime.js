@@ -4,18 +4,20 @@ const laptime = new mongoose.Schema({
     time: {
         type: String,
         trim: true,
-        require: true,
+        required: [true, '"Time" parameter not found on request body.'],
     },
     car: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        required: [true, 'Lap does not have a car associated. Send car field in the request body.'],
         ref: 'Car'
     },
     round: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        required: [true, 'Lap does not have a round associated. Send round field in the request body.'],
         ref: 'Round'
     }
+}, {
+    versionKey: false
 })
 
 laptime.pre('find', async function (next) {
@@ -54,11 +56,8 @@ laptime.methods.toJSON = function () {
     const laptime = this
 
     const publicLap = laptime.toObject()
-    delete publicLap.__v
     delete publicLap.car.createdAt
     delete publicLap.car.updatedAt
-    delete publicLap.car.__v
-    delete publicLap.round.__v
 
     return publicLap
 }

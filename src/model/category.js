@@ -3,14 +3,16 @@ const mongoose = require('mongoose')
 const categorySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
+        required: [true, 'name parameter not found on request body.'],
         trim: true
     },
     description: {
         type: String,
-        required: true,
+        required: [true, 'description parameter not found on request body.'],
         trim: true
     }
+}, {
+    versionKey: false
 })
 
 categorySchema.virtual('cars', {
@@ -29,7 +31,6 @@ categorySchema.methods.toJSON = function () {
     const category = this
 
     const publicCategory = category.toObject()
-    delete publicCategory.__v
 
     return publicCategory
 }

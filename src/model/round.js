@@ -4,16 +4,18 @@ const Category = require('./category')
 const roundSchema = new mongoose.Schema({
     name: {
         type: Number,
-        required: true,
+        required: [true, '"name" parameter not found on request body.'],
         trim: true,
         default: 1,
         enum: [1, 2, 3, 4, 5]
     },
     championship: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        required: [true, '"championship" parameter not found on request body.'],
         ref: 'Championship'
     }
+}, {
+    versionKey: false
 })
 
 roundSchema.virtual('laptimes', {
@@ -35,8 +37,6 @@ roundSchema.pre('findOne', async function (next) {
 roundSchema.methods.toJSON = function () {
     const round = this
     const publicRound = round.toObject()
-    delete publicRound.__v
-    delete publicRound.championship.__v
 
     return publicRound
 }
