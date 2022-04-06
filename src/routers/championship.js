@@ -19,6 +19,15 @@ router.post('/championship', async (req, res, next) => {
     }
 })
 
+router.get('/championship', async (req, res) => {
+    try {
+        const championships = await Championship.find()
+        res.send(championships)
+    } catch (err) {
+        next(err)
+    }
+})
+
 router.get('/championship/:id', async (req, res, next) => {
     try {
         const championship = await Championship.findById(req.params.id)
