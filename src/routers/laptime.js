@@ -71,4 +71,24 @@ router.get('/laptime/byRounds/:id', async (req, res) => {
     
 })
 
-module.exports = router
+const registerLap = async (body, callback) => {
+    const lap = new Laptime({
+        ...body
+    })
+
+    try {
+        const car = await Car.findById(body.car)
+        const round = await Round.findById(body.round)
+        if (!car || !round) {
+            callback('Car or Round Id not identified.')
+            return 
+        }
+        await lap.save()
+        callback('Lap successfully registered!')
+    } catch (error) {
+        console.log(error)
+        callback(error.message)
+    }
+}
+
+module.exports = { router, registerLap }
