@@ -39,6 +39,12 @@ carSchema.virtual('laptimes', {
     foreignField: 'car'
 })
 
+carSchema.virtual('tracks', {
+    ref: 'Track',
+    localField: '_id',
+    foreignField: 'car'
+})
+
 carSchema.pre('find', async function (next) {
     this.populate('category')
     next()

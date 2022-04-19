@@ -9,6 +9,7 @@ const carRouter = require('./routers/car')
 const roundRouter = require('./routers/round')
 const { router, registerLap } = require('./routers/laptime')
 const championshipRouter = require('./routers/championship')
+const { trackRouter } = require('./routers/track')
 
 const app = express()
 
@@ -21,8 +22,9 @@ app.use(cors())
 app.use(categoryRouter)
 app.use(carRouter)
 app.use(roundRouter)
-app.use(router)
+app.use(router) //laptimeRouter
 app.use(championshipRouter)
+app.use(trackRouter)
 
 app.use(errorController)
 
@@ -31,10 +33,9 @@ const io = socketio(server)
 
 io.on('connection', socket => {
     socket.emit('onConnection', 'Socket connected')
-
     socket.on('registerLap', message => {
         console.log(`registering lap`)
-        registerLap(message, (resultMessage) => {
+        registerLap(message, resultMessage => {
             io.emit('message', resultMessage)
             io.emit('toWebsite', message)
         })

@@ -3,6 +3,7 @@ const { notFound } = require('../controller/ErrorController')
 const Car = require('../model/car')
 const Laptime = require('../model/laptime')
 const Round = require('../model/round')
+const { leaveTrack } = require('./track')
 
 const router = new express.Router()
 router.post('/laptime/registerLap', async (req, res, next) => {
@@ -56,7 +57,6 @@ router.get('/laptime/overall/best', async (req, res, next) => {
 })
 
 router.get('/laptime/bestfive', async (req, res, next) => {
-    const asc = 1
     try {
         const lap = await Laptime.find(null, null, {
             limit: 5
@@ -68,7 +68,17 @@ router.get('/laptime/bestfive', async (req, res, next) => {
 })
 
 router.get('/laptime/byRounds/:id', async (req, res) => {
-    
+    try {
+        const round = await Round.findById(req.params.id)
+        if (!round) 
+            return res.status(400).send(
+                notFound(400, 'Round')
+            )
+        const laptimes = await Laptime.find({ round: req.params.id })
+        res.send(laptimes)
+    } catch (err) {
+        
+    }
 })
 
 const registerLap = async (body, callback) => {
@@ -84,6 +94,8 @@ const registerLap = async (body, callback) => {
             return 
         }
         await lap.save()
+        console.log({body})
+        leaveTrack(body)
         callback('Lap successfully registered!')
     } catch (error) {
         console.log(error)

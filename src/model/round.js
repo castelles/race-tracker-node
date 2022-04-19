@@ -24,6 +24,12 @@ roundSchema.virtual('laptimes', {
     foreignField: 'round'
 })
 
+roundSchema.virtual('tracks', {
+    ref: 'Track',
+    localField: '_id',
+    foreignField: 'round'
+})
+
 roundSchema.pre('find', async function (next) {
     this.populate('championship')
     next()
