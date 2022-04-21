@@ -3,7 +3,8 @@ const { notFound } = require('../controller/ErrorController')
 const Car = require('../model/car')
 const Laptime = require('../model/laptime')
 const Round = require('../model/round')
-const { leaveTrack } = require('./track')
+const Track = require('../model/track')
+const { updateTrack } = require('./track')
 
 const router = new express.Router()
 router.post('/laptime/registerLap', async (req, res, next) => {
@@ -93,9 +94,20 @@ const registerLap = async (body, callback) => {
             callback('Car or Round Id not identified.')
             return 
         }
+        const track = await Track.findOne({ 
+            car: body.car, 
+            round: body.round,
+            onTrack: true
+        })
+        if (!track) {
+            callback('Track not found or no car on track.')
+            return
+        } 
+        if (track.lap > 5) {
+            return callback('5 laps already ended.')
+        } 
         await lap.save()
-        console.log({body})
-        leaveTrack(body)
+        updateTrack(track)
         callback('Lap successfully registered!')
     } catch (error) {
         console.log(error)

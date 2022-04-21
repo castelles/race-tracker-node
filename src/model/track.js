@@ -11,6 +11,10 @@ const trackRouter = new mongoose.Schema({
         required: [true, 'Track does not have a round associated. Send round field in the request body.'],
         ref: 'Round'
     },
+    lap: {
+        type: Number,
+        required: true
+    }, 
     onTrack: {
         type: Boolean,
         default: true

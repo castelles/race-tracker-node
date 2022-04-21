@@ -15,7 +15,8 @@ router.post('/track', async (req, res, next) => {
         if (!round) return notFound(400, 'Round')
 
         const track = new Track({
-            ...req.body
+            ...req.body,
+            lap: 1
         })
         await track.save()  
         res.status(201).send()  
@@ -37,31 +38,17 @@ router.get('/track/current', async (req, res, next) => {
     }
 })
 
-const leaveTrack = async body => {
+const updateTrack = async track => {
     try {
-        const car = await Car.findById(body.car)
-        console.log(body.car)
-        if (!car) {
-            console.log('no car')
-            return
-        }
-        const round = await Round.findById(body.round)
-        if (!round) {
-            console.log('no round') 
-            return 
-        }
-        const track = await Track.findOne({ 
-            car: body.car, 
-            round: body.round,
-            onTrack: true
-        })
-        if(track) {
+        if (track.lap == 5) {
             track.onTrack = false
-            await track.save()
         }
+        console.log({track})
+        track.lap = track.lap + 1
+        await track.save()
     } catch (err) {
         throw err
     }
 }
 
-module.exports = { trackRouter: router, leaveTrack }
+module.exports = { trackRouter: router, updateTrack }
