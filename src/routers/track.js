@@ -43,7 +43,6 @@ const updateTrack = async track => {
         if (track.lap == 5) {
             track.onTrack = false
         }
-        console.log({track})
         track.lap = track.lap + 1
         await track.save()
     } catch (err) {

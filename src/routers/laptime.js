@@ -68,7 +68,7 @@ router.get('/laptime/bestfive', async (req, res, next) => {
     }
 })
 
-router.get('/laptime/byRounds/:id', async (req, res) => {
+router.get('/laptime/byRounds/:id', async (req, res, next) => {
     try {
         const round = await Round.findById(req.params.id)
         if (!round) 
@@ -78,7 +78,28 @@ router.get('/laptime/byRounds/:id', async (req, res) => {
         const laptimes = await Laptime.find({ round: req.params.id })
         res.send(laptimes)
     } catch (err) {
-        
+        next(err)
+    }
+})
+
+router.get('/laptime/:round/:car', async (req, res, next) => {
+    try {
+        const car = await Car.findById(req.params.car)
+        const round = await Round.findById(req.params.round)
+        if (!car || !round) {
+            callback('Car or Round Id not identified.')
+            return 
+        }
+        const laptimes = await Laptime.find({
+            car: req.params.car,
+            round: req.params.round
+        })
+        if (!laptimes) {
+            return notFound(404, 'Laptime')
+        }
+        res.send(laptimes)
+    } catch (err) {
+        next(err)
     }
 })
 
