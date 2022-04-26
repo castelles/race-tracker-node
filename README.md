@@ -17,9 +17,9 @@ esse dado de forma intuitiva para o usuário final.
  
 ### Pré-requisitos 
  Antes de abrir o projeto ou tentar instalar as dependências é necessário ter instalado:
-  * [NodeJS] (https://nodejs.org/en/)
-  * [MongoDB] (https://www.mongodb.com/try/download/community)
-  * [Yarn] (https://edca.com.br/blog/instalando-o-nodejs-e-o-yarn-em-4-passos)
+  * [NodeJS](https://nodejs.org/en/)
+  * [MongoDB](https://www.mongodb.com/try/download/community)
+  * [Yarn](https://edca.com.br/blog/instalando-o-nodejs-e-o-yarn-em-4-passos)
 
 ### Configurando o MongoDB
 Crie uma pasta acessível para executar o comando de inicialização do serviço de banco de dados. Por convenção, dá-se o nome de 'mongodb-data' à pasta.
